@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.fftpack import fft
 from scipy.signal import argrelextrema
+#comment
 
 #####Sodium current gating constants
 def am(Vm):

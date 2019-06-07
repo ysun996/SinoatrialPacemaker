@@ -1,21 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import odeint
-from scipy.fftpack import fft
-from scipy.signal import argrelextrema
-from common import *
 from commonDep import *
 
-
-state0 = [0, 0, 0, 0, 0, 0, 0]
-
-state = odeint(PacemakerODE, state0, t, args=(parameters,))
-pointdiff = argrelextrema(np.array(state[:,0]), np.greater)[0] * 0.2
-per = np.diff(pointdiff)
-
-
 #######Annihilation stuff
-period = pointdiff[3]
 phasedata = np.arange(0.29, 0.3, 0.01)
 stimcurrent = np.arange(-3.5, -2.5, 0.01)
 # plt.subplot(3, 1, 1)

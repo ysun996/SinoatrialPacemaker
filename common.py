@@ -1,4 +1,8 @@
 import numpy as np
+from scipy.integrate import odeint
+from scipy.signal import argrelextrema
+import matplotlib.pyplot as plt
+
 #comment
 
 #####Sodium current gating constants
@@ -101,5 +105,27 @@ def i_k1(Vm):
     IPot = 1.3 * (np.exp((Vm + 110) / 25) - 1) / (np.exp((Vm + 60) / 12.5) + np.exp((Vm + 60) / 25)) + \
            0.26 * (Vm + 30) / (1 - np.exp(-(Vm + 30) / 25))
     return IPot
+
+#Current functions
+def Isi(gSi, gnSi, d, f, v, ESi):
+    si = (gSi * d * f + gnSi * not_d(v)) * (v - ESi)
+    return si
+
+def Ina(gNa, m, h, gnNa, v, ENa):
+    na = (gNa * (m**3) * h + gnNa) * (v - ENa)
+    return na
+
+def Ix1(x1, v):
+    xi = x1 * l_bar_x1(v)
+    return xi
+
+def If(y, gfNa, ENa, EK, v):
+    f = ((y**2) * gfNa) * (v - ENa) + (v-EK) * (y**2) * (-120/EK)
+    return f
+
+def Iall(gSi, gnSi, gNa, gnNa, gfNa, ESi, ENa, EK, v, d, f, m, h, x1, y, Ibias, Istim):
+    all = Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + Ix1(x1, v) + i_k1(v) + If(y, gfNa, ENa, EK, v) + \
+         Ibias + Istim
+    return all
 
 

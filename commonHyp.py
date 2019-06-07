@@ -1,18 +1,7 @@
 from common import *
 
 #Parameters
-gNa = 4.4
-gnNa = 0.066
-gSi = 0.5175
-gnSi = 0.161
-gfNa = 1.2
-ENa = 40
-ESi = 70
-EK = -93
-Cm = 6
-Ibias = 0.7
-Istim = 0
-parameters = [gNa, gnNa, gSi, gnSi, gfNa, ENa, ESi, EK, Cm, Ibias, Istim]
+parametershyp = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, 0.7, 0]
 
 #Time
 tmax = 10000
@@ -40,13 +29,8 @@ def PacemakerODE(state, t, parameters):
     x1 = state[5]
     y = state[6]
 
-    Isi = (gSi * d * f + gnSi * not_d(v)) * (v - ESi)
-    Ina = (gNa * (m**3) * h + gnNa) * (v - ENa)
-    Ix1 = x1 * l_bar_x1(v)
-    Ik1 = i_k1(v)
-    If = ((y**2) * gfNa) * (v - ENa) + (v-EK) * (y**2) * (-120/EK)
-
-    Ii = Isi + Ina + Ix1 + Ik1 + If + Ibias + Istim
+    Ii = Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + Ix1(x1, v) + i_k1(v) + If(y, gfNa, ENa, EK, v) + \
+         Ibias + Istim
 
     dv = -Ii/Cm
 

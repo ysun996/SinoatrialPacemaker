@@ -1,9 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import odeint
-from scipy.fftpack import fft
-from scipy.signal import argrelextrema
-from common import *
 from commonDep import *
 
 def currentODE(state, t, parameters):
@@ -62,6 +56,8 @@ state3 = odeint(PacemakerODE, state2[-1, :], t3, args=(parameters3,), hmax=0.2)
 
 allstate = np.concatenate([state1, state2, state3])
 alltime = np.concatenate([t1, t2, t3])
+
+stim = pulsefun(period, per, 0.29, -2, -2)
 
 for states in allstate:
     currentval = [currentODE(states, t, parameters)]

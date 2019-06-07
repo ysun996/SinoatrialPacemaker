@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import bisect
 from scipy.integrate import odeint
 #####################################################################################################
-# Each input file contains the same code. All that was changed was which YN variable was set to 1.
-# The first Input file was set to create a graph of action potential.
+# This Input file was set to create a graph of individual currents.
 #####################################################################################################
+
+#####Gating variable equations and individual current equations
 def dzdt(a,b,z):
     hill=a/(a+b)
     timeC=1/(a+b)
@@ -389,3 +390,4 @@ if ActionPotentialYN == 1:
     plt.xlabel('t')
     plt.xlim(250,1250)
 #############################################################
+plt.show()

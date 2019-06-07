@@ -24,13 +24,8 @@ def PacemakerODE(state, t, parameters):
     x1 = state[5]
     y = state[6]
 
-    Isi = 0.78 * Isi(gSi, gnSi, d, f, v, ESi)
-    Ina = Ina(gNa, m, h, gnNa, v, ENa)
-    Ix1 = 0.8 * Ix1(x1, v)
-    Ik1 = i_k1(v)
-    If = If(y, gfNa, ENa, EK, v)
-
-    Ii = Isi + Ina + Ix1 + Ik1 + If + Ibias + Istim
+    Ii = 0.78 * Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + 0.8 * Ix1(x1, v) + i_k1(v) + \
+         If(y, gfNa, ENa, EK, v) + Ibias + Istim
 
     dv = -Ii/Cm
 
@@ -41,7 +36,6 @@ def PacemakerODE(state, t, parameters):
     dh = (ah(v) * (1-h)) - (bh(v) * h)
 
     dx1 = (ax1(v) * (1-x1)) - (bx1(v) * x1)
-    #print(dx1)
 
     dy = (ay(v) * (1-y)) - (by(v) * y)
 
@@ -68,15 +62,15 @@ def currentODE(state, t, parameters):
     x1 = state[5]
     y = state[6]
 
-    Isi = 0.78 * Isi(gSi, gnSi, d, f, v, ESi)
-    Ina = Ina(gNa, m, h, gnNa, v, ENa)
-    Ix1 = 0.8 * Ix1(x1, v)
-    Ik1 = i_k1(v)
-    If = If(y, gfNa, ENa, EK, v)
+    Is = 0.78 * Isi(gSi, gnSi, d, f, v, ESi)
+    In = Ina(gNa, m, h, gnNa, v, ENa)
+    Ix = 0.8 * Ix1(x1, v)
+    Ik = i_k1(v)
+    Iy = If(y, gfNa, ENa, EK, v)
 
-    Ii = Isi + Ina + Ix1 + Ik1 + If + I
+    Ii = Is + In + Ix + Ik + Iy + I
 
-    retcurrent = [Isi, Ina, Ix1, Ik1, If, Ii]
+    retcurrent = [Is, In, Ix, Ik, Iy, Ii]
 
     return retcurrent
 
@@ -92,10 +86,9 @@ def pulsefun(stimpoint, period, cycletime, biasamp, stimamp):
 
     parameters = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, biasamp]
     param = parameters[:]
-    p1.append(0)
+    param.append(0)
     p2 = parameters[:]
     p2.append(stimamp)
-
 
     state1 = odeint(PacemakerODE, state0, t1, args=(param,), hmax=0.2)
     state2 = odeint(PacemakerODE, state1[-1, :], t2, args=(p2,), hmax=0.2)

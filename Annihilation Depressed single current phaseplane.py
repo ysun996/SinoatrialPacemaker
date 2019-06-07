@@ -59,25 +59,15 @@ alltime = np.concatenate([t1, t2, t3])
 
 stim = pulsefun(period, per, 0.29, -2, -2)
 
-for states in allstate:
-    currentval = [currentODE(states, t, parameters)]
-    currents = np.concatenate([currents, currentval], axis = 0)
-plt.legend(['Isi', 'Ina', 'Ix1', 'Ik1', 'If'])
-for i in range(len(currents)):
-    plt.plot(alltime, currents[1:, i])
-
 dv = []
 
 for states in state1:
     pacemaker1 = PacemakerODE(states, t1, parameters1)
     dv.append(pacemaker1[0])
 
-
 for states in state2:
     pacemaker2 = PacemakerODE(states, t2, parameters2)
     dv.append(pacemaker2[0])
-
-
 
 for states in state3:
     pacemaker3 = PacemakerODE(states, t3, parameters3)

@@ -24,8 +24,12 @@ def PacemakerODE(state, t, parameters):
     x1 = state[5]
     y = state[6]
 
-    Ii = 0.78 * Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + 0.8 * Ix1(x1, v) + i_k1(v) + \
-         If(y, gfNa, ENa, EK, v) + Ibias + Istim
+    if Ibias < 0:
+        Ii = 0.78 * Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + 0.8 * Ix1(x1, v) + i_k1(v) + \
+             If(y, gfNa, ENa, EK, v) + Ibias + Istim
+    else:
+        Ii = Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + Ix1(x1, v) + i_k1(v) + \
+             If(y, gfNa, ENa, EK, v) + Ibias + Istim
 
     dv = -Ii/Cm
 
@@ -101,7 +105,8 @@ def pulsefun(state0, stimpoint, period, cycletime, biasamp, stimamp):
 
 #parameters
 parametersdep = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, -2, 0]
-parameterstim = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, -2, -2]
+parametershyp = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, 0.7, 0]
+parameterstimdep = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, -2, -2]
 state0 = [0, 0, 0, 0, 0, 0, 0]
 
 #Time
@@ -110,7 +115,14 @@ dt = 0.2
 t = np.arange(0, tmax, dt)
 
 #values
+##Depressed model values
 state = odeint(PacemakerODE, state0, t, args=(parametersdep,))
 pointdiff = argrelextrema(np.array(state[:,0]), np.greater)[0] * 0.2
 per = np.diff(pointdiff)[2]
 period = pointdiff[3]
+
+##Hyperpolarized values
+statehyp = odeint(PacemakerODE, state0, t, args=(parametershyp,))
+pointdiffhyp = argrelextrema(np.array(statehyp[:,0]), np.greater)[0] * 0.2
+perhyp = np.diff(pointdiffhyp)[2]
+periodhyp = pointdiffhyp[3]

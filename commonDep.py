@@ -74,7 +74,7 @@ def currentODE(state, t, parameters):
 
     return retcurrent
 
-def pulsefun(stimpoint, period, cycletime, biasamp, stimamp):
+def pulsefun(state0, stimpoint, period, cycletime, biasamp, stimamp):
     stimtime = stimpoint + period * cycletime
     stimmax = stimtime + 50
 
@@ -94,15 +94,14 @@ def pulsefun(stimpoint, period, cycletime, biasamp, stimamp):
     state2 = odeint(PacemakerODE, state1[-1, :], t2, args=(p2,), hmax=0.2)
     state3 = odeint(PacemakerODE, state2[-1, :], t3, args=(param,), hmax=0.2)
 
-    truestate = np.concatenate([state1[:, 0], state2[:, 0], state3[:, 0]])
+    truestate = np.concatenate([state1, state2, state3])
     truetime = np.concatenate([t1, t2, t3])
 
-    plotfun = [truestate, truetime]
-
-    return plotfun
+    return truestate, truetime
 
 #parameters
 parametersdep = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, -2, 0]
+parameterstim = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, -2, -2]
 state0 = [0, 0, 0, 0, 0, 0, 0]
 
 #Time
@@ -113,5 +112,5 @@ t = np.arange(0, tmax, dt)
 #values
 state = odeint(PacemakerODE, state0, t, args=(parametersdep,))
 pointdiff = argrelextrema(np.array(state[:,0]), np.greater)[0] * 0.2
-per = np.diff(pointdiff)
+per = np.diff(pointdiff)[2]
 period = pointdiff[3]

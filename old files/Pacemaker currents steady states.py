@@ -2,6 +2,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
+#Max rate constants
+max_a = [1, 0.0085, 0.005, 0.002468, 0.0025, 0.0000167]
+#max_a = [1, 1, 1, 1, 1, 1]
+# max_a_m = 1  #maximal opening rates for fast inward
+# max_a_n = 0.0085
+# max_a_d = 0.005  #max opening rates for slow inward
+# max_a_f = 0.002468
+# max_a_x1 = 0.0025  #max opening rates for inward rect
+# max_a_y = 0.00005  #max opening for pacemaker current
+
+max_b = [40, 2.5, 0.05, 0.05, 0.0065, 0.00033]
+#max_b = [1, 1, 1, 1, 1, 1]
+# max_b_m = 40  #max close rate for fast inward
+# max_b_n = 2.5
+# max_b_d = 0.05  #max close rate for slow inward
+# max_b_f = 0.05
+# max_b_x1 = 0.0065  #max close rates for inward rect
+# max_b_y = 0.001  #max close rate for pacemaker current
+
+
+initcon = np.arange(-100, 50, 0.5)
+
 def m_inf(Vm, max_a, max_b):
     a_m = max_a*((Vm+47)/(1-np.exp(-(Vm+47)/10)))
     b_m = max_b*np.exp(-(Vm + 72)/17.86)
@@ -43,14 +65,6 @@ def y_t(Vm, max_a, max_b):
     b_y = max_b * (Vm + 17)/(1 - np.exp(-(17 + Vm)/14.93)) ###Get your shit together why are your values messed up??
     yinf = 1/(a_y+b_y)
     return yinf
-
-#Max rate constants
-max_a = [1, 0.0085, 0.005, 0.002468, 0.0025, 0.0000167]
-
-max_b = [40, 2.5, 0.05, 0.05, 0.0065, 0.00033]
-
-#Initial condition
-initcon = np.arange(-100, 50, 0.5)
 
 plotvar = [m_inf(initcon, max_a[0], max_b[0]),
            h_inf(initcon, max_a[1], max_b[1]),

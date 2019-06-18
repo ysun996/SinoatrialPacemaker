@@ -4,7 +4,7 @@ currentarrayd = []
 
 for v in vclamp:
     state0 = [v, 0, 0, 0, 0, 0, 0]
-    state = odeint(PacemakerClamp, state0, t, args=(parametersdep,))
+    state = odeint(PacemakerODE, state0, t, args=(parametersdep, condition))
     currentarrayd.append(memcurrent(state[-1], parametersdep))
 
 plt.plot(vclamp, currentarrayd)

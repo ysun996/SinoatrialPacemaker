@@ -128,7 +128,11 @@ def Iall(gSi, gnSi, gNa, gnNa, gfNa, ESi, ENa, EK, v, d, f, m, h, x1, y, Ibias, 
          Ibias + Istim
     return all
 
-def PacemakerODE(state, t, parameters):
+####Base model: condition = 0
+####Return currents: condition = 1
+####Return voltage clamp: condition = 2
+
+def PacemakerODE(state, t, parameters, condition):
     gNa = parameters[0]
     gnNa = parameters[1]
     gSi = parameters[2]
@@ -150,13 +154,23 @@ def PacemakerODE(state, t, parameters):
     y = state[6]
 
     if Ibias < 0:
-        Ii = 0.78 * Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + 0.8 * Ix1(x1, v) + i_k1(v) + \
-             If(y, gfNa, ENa, EK, v) + Ibias + Istim
+        Is = 0.78 * Isi(gSi, gnSi, d, f, v, ESi)
+        Ix = 0.8 * Ix1(x1, v)
     else:
-        Ii = Isi(gSi, gnSi, d, f, v, ESi) + Ina(gNa, m, h, gnNa, v, ENa) + Ix1(x1, v) + i_k1(v) + \
-             If(y, gfNa, ENa, EK, v) + Ibias + Istim
+        Is = Isi(gSi, gnSi, d, f, v, ESi)
+        Ix = Ix1(x1, v)
 
-    dv = -Ii/Cm
+    In = Ina(gNa, m, h, gnNa, v, ENa)
+    Ik = i_k1(v)
+    Iy = If(y, gfNa, ENa, EK, v)
+
+    Ii = Is + In + Ix + Ik + Iy + Ibias + Istim
+
+    if condition <= 1:
+        dv = -Ii/Cm
+
+    else:
+        dv = 0
 
     dd = (ad(v) * (1-d)) - (bd(v) * d)
     df = (af(v) * (1-f)) - (bf(v) * f)
@@ -169,9 +183,12 @@ def PacemakerODE(state, t, parameters):
     dy = (ay(v) * (1-y)) - (by(v) * y)
 
     rstate = [dv, dd, df, dm, dh, dx1, dy]
+    retcurrent = [Is, In, Ix, Ik, Iy, Ii]
 
-    return rstate
-
+    if condition != 1:
+        return rstate
+    else:
+        return retcurrent
 #Values
 ##Parameters
 parametersdep = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, -2, 0]

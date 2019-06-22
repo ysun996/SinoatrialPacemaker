@@ -39,13 +39,13 @@ state0 = [0, 0, 0, 0, 0, 0, 0]
 condition = 0
 
 ##Depressed model values
-state = odeint(PacemakerODE, state0, t, args=(parametersdep,))
+state = odeint(PacemakerODE, state0, t, args=(parametersdep, condition))
 pointdiff = argrelextrema(np.array(state[:,0]), np.greater)[0] * 0.2
 per = np.diff(pointdiff)[2]
 period = pointdiff[3]
 
 ##Hyperpolarized values
-statehyp = odeint(PacemakerODE, state0, t, args=(parametershyp,))
+statehyp = odeint(PacemakerODE, state0, t, args=(parametershyp, condition))
 pointdiffhyp = argrelextrema(np.array(statehyp[:,0]), np.greater)[0] * 0.2
 perhyp = np.diff(pointdiffhyp)[2]
 periodhyp = pointdiffhyp[3]

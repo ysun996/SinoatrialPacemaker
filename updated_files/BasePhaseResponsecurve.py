@@ -1,4 +1,4 @@
-from commonJames import *
+from updated_files.commonJames import *
 
 
 # Initial state
@@ -7,7 +7,7 @@ from commonJames import *
 #########################################################################################
 # Phase Response Curves. Set HyperPolarYN to 1 for hyperpolarized phase-response curve or 0 for depolarized phase response
 # Curve.
-PhaseResetYN = 0
+PhaseResetYN = 1
 HyperPolarYN = 1
 if HyperPolarYN == 1:
     PolPulse = [0.5, 2.0, 3.5]

@@ -1,4 +1,4 @@
-from common import *
+from updated_files.common import *
 
 def memcurrent(state, parameters):
     gNa = parameters[0]

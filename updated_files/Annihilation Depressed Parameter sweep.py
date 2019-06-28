@@ -1,4 +1,4 @@
-from commonDep import *
+from updated_files.commonDep import *
 
 #######Annihilation stuff
 phasedata = np.arange(0.29, 0.3, 0.01)

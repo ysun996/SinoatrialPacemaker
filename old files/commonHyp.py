@@ -1,4 +1,4 @@
-from common import *
+from updated_files.common import *
 
 #Parameters
 parametershyp = [4.4, 0.066, 0.5175, 0.161, 1.2, 40, 70, -93, 6, 0.7, 0]

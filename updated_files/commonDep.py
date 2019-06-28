@@ -1,7 +1,6 @@
-from common import *
+from updated_files.common import *
 from scipy.integrate import odeint
 from scipy.signal import argrelextrema
-import matplotlib.pyplot as plt
 
 
 def pulsefun(state0, stimpoint, period, cycletime, biasamp, stimamp, condition = 0):

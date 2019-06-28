@@ -1,9 +1,4 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import odeint
-from scipy.fftpack import fft
-from scipy.signal import argrelextrema
-from common import *
+from updated_files.common import *
 
 
 #Parameters

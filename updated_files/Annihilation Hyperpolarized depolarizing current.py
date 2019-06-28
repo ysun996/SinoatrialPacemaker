@@ -1,4 +1,4 @@
-from commonDep import *
+from updated_files.commonDep import *
 
 phasedata = np.arange(0.3, 0.5, 0.01)
 stimcurrent = np.arange(-3, -2, 0.01)

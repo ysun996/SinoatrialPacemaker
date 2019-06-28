@@ -1,4 +1,4 @@
-from common import *
+from updated_files.common import *
 from commonHyp import *
 
 

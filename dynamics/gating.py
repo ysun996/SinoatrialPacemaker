@@ -92,7 +92,7 @@ Constants for pacemaker current (I_y)
 #     return b_y
 
 
-def ay(v, w=0.03375000000000002):
+def ay(v, w=0.03375000000000002, max_a_y=0.00005 / 3.0811907104922107):
     # Polynomial Regression
 
     if isinstance(v, float):
@@ -104,20 +104,16 @@ def ay(v, w=0.03375000000000002):
             if a_y <= 0:
                 a_y = 0.00001
         else:
-            max_a_y = 0.00005 / 3.0811907104922107
             a_y = max_a_y * np.exp(-(v + 14.25) / 14.93)
 
     else:
-        if v < 0:
-            a = [1.4557319134e-12, 4.0945641782e-10, 4.6549818992e-08, 2.4903140216e-06, 6.1460577425e-05,
-                 4.7453248494e-04, 2.5019715465e-03]
-            a_y = a[0] * v ** 6 + a[1] * v ** 5 + a[2] * v ** 4 + a[3] * v ** 3 + a[4] * v ** 2 + a[5] * v + a[6]
-            for i in range(len(v)):
-                if a_y[i] <= 0:
-                    a_y[i] = 0.00001
-        else:
-            max_a_y = 0.00005 / 3.0811907104922107
-            a_y = max_a_y * np.exp(-(v + 14.25) / 14.93)
+        a = [1.4557319134e-12, 4.0945641782e-10, 4.6549818992e-08, 2.4903140216e-06, 6.1460577425e-05,
+             4.7453248494e-04, 2.5019715465e-03]
+        a_y = np.zeros(v.shape)
+        a_y[v < 0] = a[0] * v[v < 0] ** 6 + a[1] * v[v < 0] ** 5 + a[2] * v[v < 0] ** 4 + a[3] * v[v < 0] ** 3 + a[4] * \
+                     v[v < 0] ** 2 + a[5] * v[v < 0] + a[6]
+        a_y[a_y < 0] = 0.00001
+        a_y[v >= 0] = max_a_y * np.exp(-(v[v >= 0] + 14.25) / 14.93)
 
     a_y = a_y * w
     # Modified version of the original equation
@@ -150,3 +146,22 @@ def by(v, w=0.03375000000000002):
     # b_y = (max_b_y * (Vm + 14.25) / (1 - np.exp(-(Vm + 14.25) / 5)))/3
 
     return b_y
+
+
+def get_a_b(current):
+    a = {'m': am, 'h': ah, 'f': af, 'y': ay, 'x1': ax1, 'd': ad}
+    b = {'m': bm, 'h': bh, 'f': bf, 'y': by, 'x1': bx1, 'd': bd}
+
+    return a[current], b[current]
+
+
+def x_inf(v, current):
+    a, b = get_a_b(current)
+
+    return a(v) / (a(v) + b(v))
+
+
+def tau_x(v, current):
+    a, b = get_a_b(current)
+
+    return 1 / (a(v) + b(v))

@@ -22,18 +22,21 @@ def default_parameters(state='base'):
     elif state == 'hyp':
         i_bias = 0.7
     else:
-        raise(ValueError)
+        raise (ValueError)
 
     parameters = [gNa, gnNa, gSi, gnSi, gfNa, ENa, ESi, EK, Cm, i_bias, i_stim]
 
     return parameters
 
 
-def solve(parameters, condition=0, tmax=1500, dt=0.4, clamp_ix=None,
+def solve(parameters, condition=0, t0=0, tmax=1500, dt=0.4, clamp_ix=None,
           state0=[-1.26312652e+01, 6.73685294e-01, 5.28447665e-01, 9.60815694e-01, 4.83891944e-07, 3.70080101e-02,
                   1.24208141e-01]):
-    t = np.arange(0, tmax, dt)
+    t = np.arange(t0, tmax, dt)
     state = odeint(lambda s, t, p: PacemakerODE(s, t, p, condition=condition, clamp_ix=clamp_ix), state0, t,
                    args=(parameters,))
 
     return t, state
+
+
+def perturb(parameters, condition, tmax, stim_width, t_stim)

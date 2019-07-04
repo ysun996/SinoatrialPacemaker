@@ -84,5 +84,5 @@ def current(state, t, parameters):
     return i_s, i_n, i_x, i_k, i_ff, i_bias, stimulus
 
 
-def total_current(state, t, parameters):
-    return np.sum(current(state, t, parameters))
+def total_current(state, parameters):
+    return np.sum(current(state, 0, parameters))

@@ -23,7 +23,7 @@ plt.subplot(412)
 
 im = np.zeros(len(state))
 for ix in np.arange(len(im)):
-    im[ix] = total_current(state[ix, :], t, parameters)
+    im[ix] = total_current(state[ix, :], parameters)
 plt.plot(t, im)
 plt.xlim((250, 1250))
 
